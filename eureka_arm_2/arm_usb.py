@@ -67,37 +67,43 @@ __end__"
         self.get_logger().info("arm_usb Killed!")
 
     def send(self):
-       #     print(len(self.command_format))
-            message = self.command_format % (self.heartbeat, self.control_mode, self.power_saving,
-                                             self.velocity_filtered[0], self.velocity_filtered[1], 
-                                             self.velocity_filtered[2], self.velocity_filtered[3], 
-                                             self.velocity_filtered[4], self.velocity_filtered[5], 
-                                             self.velocity_filtered[6])
-            print(message)
-            self.arm.write(bytes(message, encoding='utf8'))
-            reply = self.arm.read_until(str.encode("__end__")).decode('utf-8')
-            print(reply)
-       #     print(reply.split('\n'))
-            ctr = 0
-            for (line, line_format) in zip(reply.split('\n'), self.reply_format.split('\n')):
-      #          print('Iterated!')
-                num = h.sscanf(line, line_format, self.x[ctr], self.x[ctr + 1], self.x[ctr + 2])
-                ctr += 3
-            for ctr in range(0,7):
-                self.position_fb[ctr] = float(self.x[(ctr) * 3][0])
-                self.velocity_fb[ctr] = float(self.x[(ctr) * 3 + 1][0])
-                self.effort_fb[ctr] = float(self.x[(ctr) * 3 + 2][0])
-            message = JointState()
-            message.name = ['Slider1','Rotational1','Rotational2','Rotational3','Rotational4','Rotational5', 'Slider2']
-            message.header.stamp = self.get_clock().now().to_msg()
-            message.velocity = self.velocity_fb
-            message.effort = self.effort_fb
-            message.position = self.position_fb 
-            self.pub.publish(message)
-            message.velocity = np.array(self.velocity_filtered, dtype=np.float32).tolist()
-            message.position = [0.] * 7
-            message.effort = [0.] * 7
-            self.pub_2.publish(message)
+          try:
+           #     print(len(self.command_format))
+                message = self.command_format % (self.heartbeat, self.control_mode, self.power_saving,
+                                                 self.velocity_filtered[0], self.velocity_filtered[1], 
+                                                 self.velocity_filtered[2], self.velocity_filtered[3], 
+                                                 self.velocity_filtered[4], self.velocity_filtered[5], 
+                                                 self.velocity_filtered[6])
+                print(message)
+                self.arm.write(bytes(message, encoding='utf8'))
+                reply = self.arm.read_until(str.encode("__end__")).decode('utf-8')
+                print(reply)
+           #     print(reply.split('\n'))
+                ctr = 0
+                for (line, line_format) in zip(reply.split('\n'), self.reply_format.split('\n')):
+          #          print('Iterated!')
+                    num = h.sscanf(line, line_format, self.x[ctr], self.x[ctr + 1], self.x[ctr + 2])
+                    ctr += 3
+                for ctr in range(0,7):
+                    self.position_fb[ctr] = float(self.x[(ctr) * 3][0])
+                    self.velocity_fb[ctr] = float(self.x[(ctr) * 3 + 1][0])
+                    self.effort_fb[ctr] = float(self.x[(ctr) * 3 + 2][0])
+                message = JointState()
+                message.name = ['Slider1','Rotational1','Rotational2','Rotational3','Rotational4','Rotational5', 'Slider2']
+                message.header.stamp = self.get_clock().now().to_msg()
+                message.velocity = self.velocity_fb
+                message.effort = self.effort_fb
+                message.position = self.position_fb 
+                self.pub.publish(message)
+                message.velocity = np.array(self.velocity_filtered, dtype=np.float32).tolist()
+                message.position = [0.] * 7
+                message.effort = [0.] * 7
+                self.pub_2.publish(message)
+          except serial.serialutil.SerialException:
+                try:
+                    self.arm = serial.Serial('/dev/arm', 9600, timeout=1)
+                except serial.serialutil.SerialException:
+                     None
         
 
 
