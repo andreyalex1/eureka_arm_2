@@ -100,6 +100,7 @@ __end__"
                 message.effort = [0.] * 7
                 self.pub_2.publish(message)
           except serial.serialutil.SerialException:
+              self.get_logger().warning("No USB FS Connection to Arm!")
                 try:
                     self.arm = serial.Serial('/dev/arm', 9600, timeout=1)
                 except serial.serialutil.SerialException:
