@@ -100,7 +100,7 @@ __end__"
                 message.effort = [0.] * 7
                 self.pub_2.publish(message)
           except serial.serialutil.SerialException:
-              self.get_logger().warning("No USB FS Connection to Arm!")
+                self.get_logger().warning("No USB FS Connection to Arm!")
                 try:
                     self.arm = serial.Serial('/dev/arm', 9600, timeout=1)
                 except serial.serialutil.SerialException:
@@ -126,7 +126,8 @@ __end__"
         message.position = np.array(self.ang_wheel, dtype=np.float32).tolist()
         self.pub.publish(message)
     def filter(self):
-        for c in range(7):
+        self.velocity_filtered[6] = self.velocity_command[6]
+        for c in range(6):
             if (self.velocity_command[c] > self.velocity_filtered[c]  + 0.0009):
                 self.velocity_filtered[c] += 0.001
             if (self.velocity_command[c] < self.velocity_filtered[c]  - 0.0009):
