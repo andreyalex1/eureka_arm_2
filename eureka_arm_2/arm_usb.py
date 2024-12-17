@@ -30,8 +30,10 @@ class arm_usb(Node):
         self.position_fb = [0] * 7
         self.velocity_fb = [0] * 7
         self.effort_fb = [0] * 7
+        self.heartbeat_counter = 0
         timer_period_2 = 0.01  # seconds
         self.timer = self.create_timer(timer_period_2, self.filter)
+        self.timer2 = self.create_timer(.1, self.heartbeat_function)
         self.x = [h.ref(0) for i in range(30)]
         self.command_format = "global: heartbeat=%d, control_mode=%d, power_saving=%d\r\n\
 joint1: vel=%.4f\r\n\
@@ -110,6 +112,7 @@ __end__"
 
 
     def arm_callback(self,data):
+        self.heartbeat_counter = 0
         #print("CALLBACK_DC")
         self.velocity_command = data.velocity
     def settings_callback(self,data):
@@ -132,6 +135,12 @@ __end__"
                 self.velocity_filtered[c] += 0.001
             if (self.velocity_command[c] < self.velocity_filtered[c]  - 0.0009):
                 self.velocity_filtered[c] -= 0.001
+    
+    def heartbeat_function(self):
+        self.heartbeat_counter += 1
+   #     print(self.heartbeat_counter)
+        if(self.heartbeat_counter > 15):
+            self.velocity_command = [0] * 7
 
 
 
