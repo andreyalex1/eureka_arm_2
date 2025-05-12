@@ -5,8 +5,8 @@ def generate_launch_description():
     return LaunchDescription([
         Node(
             package='eureka_arm_2',
-            executable='arm_usb',
-            name='arm_usb',
+            executable='arm_usb_2',
+            name='arm_usb_2',
             shell=True,
         ),
     ])

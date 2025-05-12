@@ -24,7 +24,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-                'arm_usb = eureka_arm_2.arm_usb:main',
+                'arm_usb_2 = eureka_arm_2.arm_usb_2:main',
         ],
     },
 )

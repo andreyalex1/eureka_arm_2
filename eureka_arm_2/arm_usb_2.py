@@ -23,7 +23,7 @@ class arm_usb(Node):
         #commands
         self.heartbeat = 1
         self.control_mode = 1
-        self.power_saving = 0
+        self.power_saving = 1
         self.velocity_command = [0] * 6
         self.velocity_filtered = [0] * 6
         #feedback
