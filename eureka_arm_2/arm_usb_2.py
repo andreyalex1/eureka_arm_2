@@ -102,10 +102,10 @@ __end__"
         self.pub.publish(message)
     def filter(self):
         for c in range(6):
-            if (self.velocity_command[c] > self.velocity_filtered[c]  + 0.49):
-                self.velocity_filtered[c] += 0.5
-            if (self.velocity_command[c] < self.velocity_filtered[c]  - 0.49):
-                self.velocity_filtered[c] -= 0.5
+            if (self.velocity_command[c] > self.velocity_filtered[c]  + 0.99):
+                self.velocity_filtered[c] += 1.0
+            if (self.velocity_command[c] < self.velocity_filtered[c]  - 0.99):
+                self.velocity_filtered[c] -= 1.0
     
     def heartbeat_function(self):
         self.heartbeat_counter += 1
