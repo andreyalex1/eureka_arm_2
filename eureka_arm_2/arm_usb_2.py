@@ -30,6 +30,7 @@ class arm_usb(Node):
         self.position_fb = [0] * 6
         self.velocity_fb = [0] * 6
         self.effort_fb = [0] * 6
+        self.filter_step = [2.5, 0.5, 0.5, 2.5, 2.5, 2.5]
         self.heartbeat_counter = 0
         timer_period_2 = 0.01  # seconds
         self.timer = self.create_timer(timer_period_2, self.filter)
@@ -102,10 +103,10 @@ __end__"
         self.pub.publish(message)
     def filter(self):
         for c in range(6):
-            if (self.velocity_command[c] > self.velocity_filtered[c]  + 0.99):
-                self.velocity_filtered[c] += 1.0
-            if (self.velocity_command[c] < self.velocity_filtered[c]  - 0.99):
-                self.velocity_filtered[c] -= 1.0
+            if (self.velocity_command[c] > self.velocity_filtered[c]  + 0.99 * self.filter_step[c]):
+                self.velocity_filtered[c] += self.filter_step[c]
+            if (self.velocity_command[c] < self.velocity_filtered[c]  -  0.99 * self.filter_step[c]):
+                self.velocity_filtered[c] -= self.filter_step[c]
     
     def heartbeat_function(self):
         self.heartbeat_counter += 1
