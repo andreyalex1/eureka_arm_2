@@ -8,5 +8,7 @@ def generate_launch_description():
             executable='arm_usb_2',
             name='arm_usb_2',
             shell=True,
+            respawn=True,
+            respawn_delay=10,
         ),
     ])
