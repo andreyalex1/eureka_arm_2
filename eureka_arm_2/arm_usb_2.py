@@ -34,7 +34,7 @@ class arm_usb(Node):
         self.heartbeat_counter = 0
         timer_period_2 = 0.01  # seconds
         self.timer = self.create_timer(timer_period_2, self.filter)
-        self.timer2 = self.create_timer(.1, self.heartbeat_function)
+        self.timer2 = self.create_timer(0.1, self.heartbeat_function)
         self.x = [h.ref(0) for i in range(30)]
         self.command_format = "global: heartbeat=%d, control_mode=%d, power_saving=%d\r\n\
 joint1: stepper_vel=%.4f\r\n\
